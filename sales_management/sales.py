@@ -32,7 +32,13 @@ class SalesManager:
             To record the sale of 3 units of "P001" at $2.99 each:
             >>> sales_manager.record_sale("P001", 3, 2.99)
         """
-        self.sales_records.append({"product_id": product_id, "quantity": quantity, "price": price})
+        
+        try:
+            if quantity < 0 or price < 0:
+                raise ValueError("Quantity and price must be non-negative.")
+            self.sales_records.append({"product_id": product_id, "quantity": quantity, "price": price})
+        except ValueError as e:
+            print(f"Error recording sale: {e}")
 
     def total_sales(self):
         """Calculates the total sales revenue based on recorded sales transactions.
@@ -41,4 +47,8 @@ class SalesManager:
             float: The total sales revenue, which is the sum of the price * quantity
                    for all recorded sales transactions.
         """
-        return sum(record['price'] * record['quantity'] for record in self.sales_records)
+        try:
+            return sum(record['price'] * record['quantity'] for record in self.sales_records)
+        except Exception as e:
+            print(f"Error calculating total sales: {e}")
+            return 0

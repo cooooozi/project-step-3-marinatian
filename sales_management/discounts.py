@@ -26,9 +26,12 @@ class DiscountManager:
         Raises:
             ValueError: If the discount_rate is not between 0 and 1.
         """
-        if not 0 <= discount_rate <= 1:
-            raise ValueError("Discount rate must be between 0 and 1.")
-        self.discounts[product_id] = discount_rate
+        try:
+            if not 0 <= discount_rate <= 1:
+                raise ValueError("Discount rate must be between 0 and 1.")
+            self.discounts[product_id] = discount_rate
+        except ValueError as e:
+            print(f"Error adding discount: {e}")
 
     def remove_discount(self, product_id):
         """Removes a previously assigned discount from a product.
@@ -39,9 +42,12 @@ class DiscountManager:
         Raises:
             KeyError: If the product_id is not found in the discounts dictionary.
         """
-        if product_id not in self.discounts:
-            raise KeyError(f"No discount found for product ID {product_id}.")
-        del self.discounts[product_id]
+        try:
+            if product_id not in self.discounts:
+                raise KeyError(f"No discount found for product ID {product_id}.")
+            del self.discounts[product_id]
+        except KeyError as e:
+            print(f"Error removing discount: {e}")
 
     def apply_discount(self, product_id, price):
         """Applies the discount rate to the given price of a product if a discount exists.
@@ -54,6 +60,10 @@ class DiscountManager:
             float: The discounted price of the product if a discount is applied,
                    otherwise the original price.
         """
-        if product_id not in self.discounts:
+        try:
+            if product_id not in self.discounts:
+                return price  # No discount to apply
+            return price * (1 - self.discounts[product_id])
+        except Exception as e:
+            print(f"Error applying discount: {e}")
             return price
-        return price * (1 - self.discounts[product_id])
